@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
   Image,
   Platform,
@@ -94,84 +95,42 @@ export default class HomeScreen extends React.Component {
             <View style={styles.iconContainer}>
             <TouchableOpacity onPress={this._handleFacebookPress}>
                 <Image
-                  source={
-                    __DEV__
-                    ? require('../assets/images/facebook.png')
-                    : require('../assets/images/facebook.png')
-                  }
+                  source={require('../assets/images/facebook.png')}
                   style={styles.iconImage}
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={this._handleInstagramPress}>
                 <Image
-                  source={
-                    __DEV__
-                      ? require('../assets/images/instagram.png')
-                      : require('../assets/images/instagram.png')
-                  }
+                  source={require('../assets/images/instagram.png')}
                   style={styles.iconImage}
                 />
               </TouchableOpacity>
             </View>
 
-            {/* <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View> */}
           </View>
-
-          {/* <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View> */}
 
         </ScrollView>
-
-        {/* <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View> */}
-
 
       </View>
     );
   }
 
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
   _handleSignIn = () => {
-
-  };
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes');
+    console.log('navigating');
+    // this.props.navigation.push('Scan')
+    axios.post('http://localhost:2345/checkName', {params: {username: this.state.username}})
+    .then((response) => {
+      /**
+       * If the response shows it is a new user, notify the user and let them select either to proceed to sign in
+       * or to go back to revise their name
+       */
+      /**
+       * If the response shows an existing user, proceed to scan screen
+       * */ 
+      console.log('hi');
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   _handleFacebookPress = () => {

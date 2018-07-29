@@ -2,16 +2,12 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions, WebBrowser } from 'expo';
 
-export default class SettingsScreen extends React.Component {
+export default class ScanScreen extends React.Component {
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
     autofocus: Camera.Constants.AutoFocus.on
   };
-
-  // async componentWillUnmount() {
-  //   const { status } = await Permissions.askAsync(Permissions.CAMERA);
-  // }
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -36,6 +32,7 @@ export default class SettingsScreen extends React.Component {
             type={this.state.type} 
             autoFocus={this.state.autofocus}
             onBarCodeRead={(data) => this.handleBarCodeRead(data)}
+            onMountError={(message) => console.log(message)}
           >
             <View
               style={{
@@ -68,4 +65,3 @@ export default class SettingsScreen extends React.Component {
     }
   }
 }
-
