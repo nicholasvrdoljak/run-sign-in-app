@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import config from '../config.js';
 import {
   Image,
   Platform,
@@ -118,7 +119,11 @@ export default class HomeScreen extends React.Component {
   _handleSignIn = () => {
     console.log('navigating');
     // this.props.navigation.push('Scan')
-    axios.post('http://localhost:2345/checkName', {params: {username: this.state.username}})
+    axios.post(`${config.REST_SERVER}/checkName`, {
+      params: {
+        username: this.state.username
+      }
+    })
     .then((response) => {
       /**
        * If the response shows it is a new user, notify the user and let them select either to proceed to sign in
