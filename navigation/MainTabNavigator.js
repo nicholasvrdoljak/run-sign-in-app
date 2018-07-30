@@ -5,10 +5,12 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import ScanScreen from '../screens/ScanScreen';
+import LinksScreen from '../screens/LinksScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Scan: ScanScreen
+  Scan: ScanScreen,
+  Links: LinksScreen
 });
 
 HomeStack.navigationOptions = {
@@ -25,6 +27,8 @@ HomeStack.navigationOptions = {
   ),
 };
 
-export default createBottomTabNavigator({
-  HomeStack,
-});
+// export default createBottomTabNavigator({
+//   HomeStack,
+// });
+
+export default HomeStack;

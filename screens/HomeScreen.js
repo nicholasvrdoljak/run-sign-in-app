@@ -34,11 +34,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/sloppy.jpg')
-                  : require('../assets/images/sloppy.jpg')
-              }
+              source={require('../assets/images/sloppy.jpg')}
               style={styles.welcomeImage}
             />
           </View>
@@ -118,13 +114,13 @@ export default class HomeScreen extends React.Component {
 
   _handleSignIn = () => {
     console.log('navigating');
-    // this.props.navigation.push('Scan')
-    axios.post(`${config.REST_SERVER}/checkName`, {
-      params: {
-        username: this.state.username
-      }
-    })
-    .then((response) => {
+    this.props.navigation.push('Scan')
+    // axios.post(`${config.REST_SERVER}/checkName`, {
+      // params: {
+      //   username: this.state.username
+      // }
+    // })
+    // .then((response) => {
       /**
        * If the response shows it is a new user, notify the user and let them select either to proceed to sign in
        * or to go back to revise their name
@@ -132,10 +128,10 @@ export default class HomeScreen extends React.Component {
       /**
        * If the response shows an existing user, proceed to scan screen
        * */ 
-      console.log('hi');
-    }).catch((error) => {
-      console.log(error);
-    });
+    //   console.log('hi');
+    // }).catch((error) => {
+    //   console.log(error);
+    // });
   };
 
   _handleFacebookPress = () => {

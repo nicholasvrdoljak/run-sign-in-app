@@ -15,7 +15,9 @@ export default class ScanScreen extends React.Component {
   }
 
   handleBarCodeRead(data) {
-    WebBrowser.openBrowserAsync(data.data);
+    console.log('navigating to links', data);
+    this.props.navigation.navigate('Links', {runCode: data.data});
+    // WebBrowser.openBrowserAsync(data.data);
   }
 
   render() {
