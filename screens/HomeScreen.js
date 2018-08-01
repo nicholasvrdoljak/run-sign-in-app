@@ -12,15 +12,15 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      username: '',
-      password: '',
+      first: '',
+      last: '',
+      dob: '',
       text: ''
     }
   }
@@ -39,38 +39,62 @@ export default class HomeScreen extends React.Component {
             />
           </View>
             <View style={{flexDirection: 'column', alignItems: 'center'}}>
-
+              <Text style={{color: 'red'}}>{this.state.text}</Text>
               <Text style={styles.getStartedText}>
-                Please sign in with your username and password to register for the run.
+                Please sign in with your first/last name, and the day you were born to register for the run.
               </Text>
               
               <View style={{flexDirection: 'row'}}>
                 <View style={styles.signInContainer}> 
                   <TextInput
+                    name='first'
                     style = {styles.signInFields}
-                    onChangeText={(text) => this.setState({username: text})}
-                    placeholder='username'
+                    onChangeText={(text) => this.setState({first: text})}
+                    placeholder='firstname'
                     placeholderTextColor = "#9a73ef"
+                    returnKeyType='next'
+                    onSubmitEditing = {() => this.lastInput.focus()}
                   />
                   <TextInput
+                    name='last'
                     style = {styles.signInFields}
-                    onChangeText={(text) => this.setState({password: text})}
-                    placeholder='password'
-                    secureTextEntry={true}
+                    onChangeText={(text) => this.setState({last: text})}
+                    placeholder='lastname'
+                    // secureTextEntry={true}
                     placeholderTextColor = "#9a73ef"
+                    returnKeyType = 'next'
+                    onSubmitEditing = {() => this.dob.focus()}
+                    ref={(input) => this.lastInput = input}
                   />
                 </View>
                 
-                <View style={{justifyContent: 'center'}}>
+                <View>
+                  <TextInput
+                    style = {{
+                        width: 50,
+                        borderColor: '#7a42f4',
+                        borderWidth: 1, 
+                        marginVertical: 5,
+                        height: 40,
+                        paddingHorizontal: 10,
+                      }}
+                    name='dob'
+                    onChangeText={(text) => this.setState({dob: text})}
+                    keyboardType= 'numeric'
+                    placeholder='d.o.b.'
+                    placeholderTextColor = "#9a73ef"
+                    onSubmitEditing = {() => this._handleSignIn()}
+                    ref={(input) => this.dob = input}
+                  />
                   <TouchableOpacity 
                     onPress={this._handleSignIn.bind(this)}>
                     <Image
                       source={require('../assets/images/go.png')}
                       style = {{
-                          height: 30, 
-                          width: 30,
+                          height: 40, 
+                          width: 40,
                           resizeMode: 'contain',
-                          marginTop: 3,
+                          marginTop: 5,
                           marginHorizontal: 5,
                           alignItems: 'center',
                           alignContent: 'center'
@@ -112,28 +136,56 @@ export default class HomeScreen extends React.Component {
     );
   }
 
-  _handleSignIn = () => {
-    console.log('navigating');
-    this.props.navigation.push('Scan')
-    // axios.post(`${config.REST_SERVER}/checkName`, {
-      // params: {
-      //   username: this.state.username
-      // }
-    // })
-    // .then((response) => {
-      /**
-       * If the response shows it is a new user, notify the user and let them select either to proceed to sign in
-       * or to go back to revise their name
-       */
-      /**
-       * If the response shows an existing user, proceed to scan screen
-       * */ 
-    //   console.log('hi');
-    // }).catch((error) => {
-    //   console.log(error);
-    // });
-  };
+  notify = (text) => {
+    this.setState({text});
+  }
 
+  _handleSignIn = () => {
+    console.log('navigating', this.state.first, this.state.last, this.state.dob);
+    if (this.state.first.length === 0) {
+      this.setState({text: 'Error, please enter a first name\n'});
+    } else if (this.state.last.length === 0) {
+      this.setState({text: 'Error, please enter a last name\n'});
+    } else if (this.state.dob.length === 0) {
+      this.setState({text: 'Error, please enter a date of birth\n'});
+    } else {
+      axios.post(`${config.REST_SERVER}/checkName`, {
+        params: {
+          f: this.state.first, 
+          l: this.state.last, 
+          d: this.state.dob
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.message === 'new_user') {
+          /**
+           * If the response shows it is a new user, 
+           * notify the user and let them select either to proceed to TOS
+           * or to go back to revise their name
+           */
+          this.props.navigation.navigate('NewUser', {
+            notify: this.notify.bind(this),
+            first: this.state.first, 
+            last: this.state.last, 
+            dob: this.state.dob
+          });
+        } else if (response.data.message ===  'existing_user') {
+          /**
+           * If the response shows an existing user, proceed to terms of service
+           * */ 
+          this.props.navigation.navigate('Scan', {
+            first: this.state.first, 
+            last: this.state.last, 
+            dob: this.state.dob
+          });
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+  };
+  
   _handleFacebookPress = () => {
     WebBrowser.openBrowserAsync('https://www.facebook.com/SloppyMooseRunningClub');
   };
@@ -254,9 +306,9 @@ const styles = StyleSheet.create({
   signInContainer: {},
   signInFields: {
     marginVertical: 5,
-    marginHorizontal: 15,
+    marginHorizontal: 5,
     paddingHorizontal: 10,
-    width: 250,
+    width: 240,
     height: 40,
     borderColor: '#7a42f4',
     borderWidth: 1
