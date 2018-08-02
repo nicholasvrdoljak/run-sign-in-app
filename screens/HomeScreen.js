@@ -83,7 +83,7 @@ export default class HomeScreen extends React.Component {
                     keyboardType= 'numeric'
                     placeholder='d.o.b.'
                     placeholderTextColor = "#9a73ef"
-                    onSubmitEditing = {() => this._handleSignIn()}
+                    onSubmitEditing = {this._handleSignIn.bind(this)}
                     ref={(input) => this.dob = input}
                   />
                   <TouchableOpacity 
@@ -149,6 +149,7 @@ export default class HomeScreen extends React.Component {
     } else if (this.state.dob.length === 0) {
       this.setState({text: 'Error, please enter a date of birth\n'});
     } else {
+      // start a loader
       axios.post(`${config.REST_SERVER}/checkName`, {
         params: {
           f: this.state.first, 
@@ -157,6 +158,7 @@ export default class HomeScreen extends React.Component {
         }
       })
       .then((response) => {
+        //cancel the loader
         console.log(response.data);
         if (response.data.message === 'new_user') {
           /**
@@ -177,7 +179,8 @@ export default class HomeScreen extends React.Component {
           this.props.navigation.navigate('Scan', {
             first: this.state.first, 
             last: this.state.last, 
-            dob: this.state.dob
+            dob: this.state.dob, 
+            route: 'signIn'
           });
         }
       }).catch((error) => {

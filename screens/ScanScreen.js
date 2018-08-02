@@ -1,12 +1,14 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions, WebBrowser } from 'expo';
+import axios from 'axios';
 
 export default class ScanScreen extends React.Component {
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
-    autofocus: Camera.Constants.AutoFocus.on
+    autofocus: Camera.Constants.AutoFocus.on, 
+    code: ''
   };
 
   async componentWillMount() {
@@ -15,8 +17,10 @@ export default class ScanScreen extends React.Component {
   }
 
   handleBarCodeRead(data) {
+    // start loader
     console.log('navigating to links', data);
-    this.props.navigation.navigate('Links', {runCode: data.data});
+    // axios.post()
+    // this.props.navigation.navigate('Links', {runCode: data.data});
     // WebBrowser.openBrowserAsync(data.data);
   }
 
