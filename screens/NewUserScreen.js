@@ -10,8 +10,7 @@ export default class NewUserScreen extends React.Component {
     }
 
     handleSignUp = () => {
-        console.log('signing up', {size: this.state.size, ...this.props.navigation.state.params});
-        // this.props.navigation.navigate('Scan', {route: 'signUp', size: this.state.size, ...this.props.navigation.state.params});
+        this.props.navigation.navigate('Scan', {route: '/signUp', size: this.state.size, ...this.props.navigation.state.params});
     }
 
     render() {

@@ -71,17 +71,17 @@ export default class HomeScreen extends React.Component {
                 <View>
                   <TextInput
                     style = {{
-                        width: 50,
+                        width: 60,
+                        height: 40,
                         borderColor: '#7a42f4',
                         borderWidth: 1, 
                         marginVertical: 5,
-                        height: 40,
                         paddingHorizontal: 10,
                       }}
                     name='dob'
                     onChangeText={(text) => this.setState({dob: text})}
                     keyboardType= 'numeric'
-                    placeholder='d.o.b.'
+                    placeholder='dob'
                     placeholderTextColor = "#9a73ef"
                     onSubmitEditing = {this._handleSignIn.bind(this)}
                     ref={(input) => this.dob = input}
@@ -92,7 +92,7 @@ export default class HomeScreen extends React.Component {
                       source={require('../assets/images/go.png')}
                       style = {{
                           height: 40, 
-                          width: 40,
+                          width: 60,
                           resizeMode: 'contain',
                           marginTop: 5,
                           marginHorizontal: 5,
@@ -159,7 +159,6 @@ export default class HomeScreen extends React.Component {
       })
       .then((response) => {
         //cancel the loader
-        console.log(response.data);
         if (response.data.message === 'new_user') {
           /**
            * If the response shows it is a new user, 
@@ -180,7 +179,7 @@ export default class HomeScreen extends React.Component {
             first: this.state.first, 
             last: this.state.last, 
             dob: this.state.dob, 
-            route: 'signIn'
+            route: '/signIn'
           });
         }
       }).catch((error) => {
@@ -311,7 +310,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 5,
     paddingHorizontal: 10,
-    width: 240,
+    width: 220,
     height: 40,
     borderColor: '#7a42f4',
     borderWidth: 1

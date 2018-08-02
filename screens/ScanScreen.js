@@ -4,12 +4,16 @@ import { Camera, Permissions, WebBrowser } from 'expo';
 import axios from 'axios';
 
 export default class ScanScreen extends React.Component {
-  state = {
-    hasCameraPermission: null,
-    type: Camera.Constants.Type.back,
-    autofocus: Camera.Constants.AutoFocus.on, 
-    code: ''
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      autofocus: Camera.Constants.AutoFocus.on,
+      code: '',
+      camera: true
+    }
+  }
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -18,8 +22,27 @@ export default class ScanScreen extends React.Component {
 
   handleBarCodeRead(data) {
     // start loader
-    console.log('navigating to links', data);
-    // axios.post()
+    this.setState({camera: false});
+    axios.post(`${config.REST_SERVER}${this.props.navigation.state.params.route}`, {
+        params: {
+          f: this.props.navigation.state.params.first, 
+          l: this.props.navigation.state.params.last, 
+          d: this.props.navigation.state.params.dob, 
+          s: this.props.navigation.state.params.size,
+          c: data.data
+        }
+      }).then((response) => {
+        console.log('response', response.data);
+        let responseOptions = {
+          'successful_signup': 1, 
+          'error_wrong_code': 1, 
+          'duplicate_signin': 1, 
+          'successful_signin': 1,
+          'multiple_users': 1
+        }
+      }).catch(err => {
+        console.log('error', err);
+      });
     // this.props.navigation.navigate('Links', {runCode: data.data});
     // WebBrowser.openBrowserAsync(data.data);
   }
@@ -30,7 +53,7 @@ export default class ScanScreen extends React.Component {
       return <View />;
     } else if (hasCameraPermission === false) {
       return <Text>No access to camera</Text>;
-    } else {
+    } else if (this.state.camera) {
       return (
         <View style={{ flex: 1 }}>
           <Camera 
@@ -67,6 +90,10 @@ export default class ScanScreen extends React.Component {
             </View>
           </Camera>
         </View>
+      );
+    } else {
+      return(
+        <Text>Please wait</Text>
       );
     }
   }
